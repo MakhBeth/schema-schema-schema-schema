@@ -106,8 +106,6 @@ const generation = (ast?: AST, {
   return acc
 }
 
-console.log(generation(schema.ast))
-
 </script>
 
 <template>
