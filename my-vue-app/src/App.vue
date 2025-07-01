@@ -46,8 +46,8 @@ const form = useForm({
 })
 
 interface Acc {
-  kind: string;
-  meta: any;
+  kind: string
+  meta: any
 }
 const generation = (ast?: AST, {
   meta = {} as Record<string, any>,
@@ -62,19 +62,19 @@ const generation = (ast?: AST, {
       Match.tag('StringKeyword', (a) => {
         return {
           kind: 'string',
-          meta: a.checks?.reduce((accr, check) => ({...accr, ...check.annotations?.meta || {}}), {})
+          meta: a.checks?.reduce((accr, check) => ({ ...accr, ...check.annotations?.meta || {} }), {})
         }
       }),
       Match.tag('NumberKeyword', (a) => {
         return {
           kind: 'number',
-          meta: a.checks?.reduce((accr, check) => ({...accr, ...check.annotations?.meta || {}}), {})
+          meta: a.checks?.reduce((accr, check) => ({ ...accr, ...check.annotations?.meta || {} }), {})
         }
       }),
       Match.tag('BooleanKeyword', (a) => {
         return {
           kind: 'boolean',
-          meta: a.checks?.reduce((accr, check) => ({...accr, ...check.annotations?.meta || {}}), {})
+          meta: a.checks?.reduce((accr, check) => ({ ...accr, ...check.annotations?.meta || {} }), {})
         }
       }),
       Match.tag('BigIntKeyword',
@@ -96,7 +96,7 @@ const generation = (ast?: AST, {
       Match.exhaustive
     )
   }
-  for(const propertySignature of propertySignatures) {
+  for (const propertySignature of propertySignatures) {
     Object.assign(acc, {
       [propertySignature.name]: generation(propertySignature.type, {
         meta,
@@ -113,10 +113,14 @@ console.log(generation(schema.ast))
 <template>
   <form @submit.prevent="form.handleSubmit">
     <div v-for="input in Object.entries(generation(schema.ast))">
+      {{ input[1].meta }}
       <form.Field :name="input[0]">
         <template #default="{ field, state }">
           <label :for="field.name">{{ field.name }}</label>
-          <input :id="field.name" :name="field.name" :value="field.state.value" :type="input[1].kind" :minlength="input[1].meta?.minLength" :maxlength="input[1].meta?.maxLength" :min="input[1].meta?.minimum" :max="input[1].meta?.maximum"
+          <input :id="field.name" :name="field.name" :value="field.state.value" :type="input[1].kind"
+            :minlength="input[1].meta?.minLength" :maxlength="input[1].meta?.maxLength"
+            :min="input[1].meta?.minimum || input[1].meta?.exclusiveMinimum + 1"
+            :max="input[1].meta?.maximum || input[1].meta?.exclusiveMaximum - 1"
             @input="field.handleChange(($event.target as HTMLInputElement)[input[1].kind === 'number' ? 'valueAsNumber' : 'value'])" />
           <FieldState :state="state" />
         </template>
