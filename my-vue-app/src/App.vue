@@ -111,7 +111,6 @@ const generation = (ast?: AST, {
 <template>
   <form @submit.prevent="form.handleSubmit">
     <div v-for="input in Object.entries(generation(schema.ast))">
-      {{ input[1].meta }}
       <form.Field :name="input[0]">
         <template #default="{ field, state }">
           <label :for="field.name">{{ field.name }}</label>
