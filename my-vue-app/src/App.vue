@@ -23,7 +23,7 @@ const defaultSchema = Schema.standardSchemaV1(schema, {
   checkHook: (issue) => {
     const meta = issue.check.annotations?.meta
 
-    // having the meta values linked to the id is too much?
+    // having the meta values as union is too much?
     switch (meta?.id) {
       case 'minLength':
         return `This is too short: ${meta.minLength} characters at least`
